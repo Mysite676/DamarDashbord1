@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Damar Enterprise Loan System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <style>
+        :root {
+            --primary-color: #2e8b57; /* Green */
+            --primary-dark: #1f6b3d;
+            --secondary-color: #1e90ff; /* Blue */
+            --accent-color: #ff4757; /* Red */
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #343a40;
+            --text-light: #6c757d;
+            --border-color: #e9ecef;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-md: 0 10px 15px rgba(0,0,0,0.1);
+            --shadow-lg: 0 20px 25px rgba(0,0,0,0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --radius-sm: 0.25rem;
+            --radius: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+        }
+
+        .dark-mode {
+            --primary-color: #2ecc71;
+            --primary-dark: #27ae60;
+            --secondary-color: #3498db;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #f8f9fa;
+            --text-light: #adb5bd;
+            --border-color: #343a40;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
+            --shadow: 0 4px 6px rgba(0,0,0,0.3);
+            --shadow-md: 0 10px 15px rgba(0,0,0,0.3);
+            --shadow-lg: 0 20px 25px rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            font-size: 16px;
+            transition: var(--transition);
+            -webkit-text-size-adjust: 100%;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        /* Login Screen */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+            background: url('photo12.jpg') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 0;
+        }
+
+        .login-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            border-top: 5px solid var(--primary-color);
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-card h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .login-card .logo {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            background-color: rgba(46, 139, 87, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: var(--primary-color);
+        }
+
+        .login-form .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .login-form label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--text-color);
+            font-size: 14px;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            transition: var(--transition);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .login-form input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.2);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: var(--danger-color);
+            margin-top: 8px;
+            font-size: 13px;
+            display: none;
+        }
+
+        /* Main App (hidden initially) */
+        .app-container {
+            display: none;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 12px 0;
+            text-align: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius);
+            object-fit: cover;
+            margin-right: 12px;
+            background: rgba(255,255,255,0.2);
+            padding: 5px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-text h1 {
+            font-size: 16px;
+            margin-bottom: 4px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            font-weight: 300;
+            font-size: 11px;
+            opacity: 0.9;
+            text-align: left;
+        }
+
+        .dark-mode-toggle {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .dark-mode-toggle:hover {
+            background: rgba(255,255,255,0.2);
+            transform: rotate(30deg);
+        }
+
+        /* Main content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        /* Stats cards */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .stat-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 12px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-card h3 {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--primary-color);
+        }
+
+        .stat-card p {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        /* Section headers */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .section-header h2 {
+            color: var(--primary-color);
+            font-size: 16px;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 4px;
+        }
+
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 35px;
+            height: 3px;
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+
+        .btn {
+            padding: 7px 12px;
+            border-radius: var(--radius);
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition);
+            font-size: 13px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: var(--shadow-sm);
+            white-space: nowrap;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            opacity: 0.9;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Table styles */
+        .table-container {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 15px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th, td {
+            padding: 10px 8px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 13px;
+        }
+
+        th {
+            background-color: rgba(46, 139, 87, 0.1);
+            font-weight: 600;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+
+        tr:hover {
+            background-color: rgba(46, 139, 87, 0.05);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+            min-width: 65px;
+            text-align: center;
+        }
+
+        .status-pending {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning-color);
+        }
+
+        .status-active {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: var(--success-color);
+        }
+
+        .status-overdue {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger-color);
+        }
+
+        .status-repaid {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--success-color);
+        }
+
+        .status-rejected {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger-color);
+        }
+
+        /* Form styles */
+        .form-container {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 15px;
+            box-shadow: var(--shadow);
+            margin-bottom: 15px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .form-container.active {
+            display: block;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .form-header h2 {
+            color: var(--primary-color);
+            margin-bottom: 6px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .form-header p {
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        @media (min-width: 480px) {
+            .form-row {
+                flex-direction: row;
+            }
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--text-color);
+            font-size: 13px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 9px 11px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            transition: var(--transition);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.2);
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 7px 10px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .radio-option:hover {
+            border-color: var(--primary-color);
+        }
+
+        .radio-option input {
+            width: auto;
+            margin-right: 8px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 15px;
+            gap: 8px;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 12px 15px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(150%);
+            transition: var(--transition);
+            z-index: 1000;
+            max-width: 280px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification-icon {
+            font-size: 20px;
+            color: var(--accent-color);
+        }
+
+        .notification.due-today {
+            border-left-color: var(--danger-color);
+        }
+
+        .notification.due-today .notification-icon {
+            color: var(--danger-color);
+        }
+
+        .notification.due-soon {
+            border-left-color: var(--warning-color);
+        }
+
+        .notification.due-soon .notification-icon {
+            color: var(--warning-color);
+        }
+
+        .notification.paid {
+            border-left-color: var(--success-color);
+        }
+
+        .notification.paid .notification-icon {
+            color: var(--success-color);
+        }
+
+        .notification-content h4 {
+            margin-bottom: 4px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .notification-content p {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .close-notification {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            margin-left: 8px;
+            font-size: 15px;
+            transition: var(--transition);
+        }
+
+        .close-notification:hover {
+            color: var(--text-color);
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 30px 15px;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 45px;
+            color: var(--border-color);
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .empty-state p {
+            max-width: 280px;
+            margin: 0 auto;
+            font-size: 13px;
+        }
+
+        /* Loan Calculator */
+        .calculator-container {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 15px;
+            box-shadow: var(--shadow);
+            margin-bottom: 15px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+            border-top: 4px solid var(--secondary-color);
+        }
+
+        .calculator-container.active {
+            display: block;
+        }
+
+        .calculator-header {
+            text-align: center;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .calculator-header h2 {
+            color: var(--secondary-color);
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .calculator-results {
+            margin-top: 15px;
+            padding: 12px;
+            background-color: rgba(30, 144, 255, 0.1);
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--secondary-color);
+        }
+
+        .calculator-results h4 {
+            color: var(--secondary-color);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .calculator-results p {
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .calculator-results .result-value {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 15px;
+        }
+
+        .tab {
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-light);
+            border-bottom: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Loading spinner */
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .header-text h1 {
+                font-size: 15px;
+            }
+            
+            .subtitle {
+                font-size: 10px;
+            }
+            
+            .dark-mode-toggle {
+                width: 30px;
+                height: 30px;
+                font-size: 15px;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+            
+            .notification {
+                max-width: calc(100% - 30px);
+                right: 15px;
+                left: 15px;
+            }
+            
+            .login-card {
+                padding: 20px;
+            }
+            
+            .login-card h2 {
+                font-size: 20px;
+            }
+            
+            .login-card .logo {
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+            }
+            
+            table {
+                min-width: 100%;
+            }
+            
+            th, td {
+                padding: 8px 6px;
+                font-size: 12px;
+            }
+            
+            .status-badge {
+                font-size: 10px;
+                min-width: 60px;
+                padding: 3px 6px;
+            }
+            
+            .tabs {
+                overflow-x: auto;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 2px;
+            }
+            
+            .tab {
+                font-size: 13px;
+                padding: 6px 12px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-text h1 {
+                font-size: 14px;
+            }
+            
+            .login-btn {
+                font-size: 14px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-container" id="loginScreen">
+        <div class="login-card">
+            <div class="logo">
+                <i class="fas fa-hand-holding-usd"></i>
+            </div>
+            <h2>Damar Enterprise</h2>
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Enter username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter password" required>
+                </div>
+                <div class="error-message" id="loginError">
+                    Invalid username or password
+                </div>
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App (hidden initially) -->
+    <div class="app-container" id="appContainer">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-hand-holding-usd"></i>
+                </div>
+                <div class="header-text">
+                    <h1>Damar Enterprise Loan System</h1>
+                    <p class="subtitle">Manage all loan applications and borrowers</p>
+                </div>
+            </div>
+            <button class="dark-mode-toggle" id="darkModeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </header>
+
+        <div class="container">
+            <div class="main-content">
+                <!-- Tabs -->
+                <div class="tabs">
+                    <div class="tab active" data-tab="dashboard">Dashboard</div>
+                    <div class="tab" data-tab="calculator">Loan Calculator</div>
+                </div>
+
+                <!-- Dashboard Tab -->
+                <div class="tab-content active" id="dashboard-tab">
+                    <!-- Stats Cards -->
+                    <div class="stats-container">
+                        <div class="stat-card">
+                            <h3>Total Borrowers</h3>
+                            <div class="stat-value" id="totalBorrowers">0</div>
+                            <p>All customers</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Active Loans</h3>
+                            <div class="stat-value" id="activeLoans">0</div>
+                            <p>Currently active</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Overdue Loans</h3>
+                            <div class="stat-value" id="overdueLoans">0</div>
+                            <p>Past due date</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Total Loan Amount</h3>
+                            <div class="stat-value" id="totalLoanAmount">ZMW 0</div>
+                            <p>All loans combined</p>
+                        </div>
+                    </div>
+
+                    <!-- New Loan Form -->
+                    <div class="form-container" id="loanForm">
+                        <div class="form-header">
+                            <h2>New Loan Application</h2>
+                            <p>Fill in the details to add a new loan</p>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <input type="text" id="firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" id="lastName" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" placeholder="e.g. 0971234567" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="loanAmount">Loan Amount (ZMW)</label>
+                            <input type="number" id="loanAmount" min="100" value="100" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Repayment Period</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="repaymentPeriod" value="7" checked> 
+                                    1 Week
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="repaymentPeriod" value="14"> 
+                                    2 Weeks
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="repaymentPeriod" value="21"> 
+                                    3 Weeks
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="repaymentPeriod" value="28"> 
+                                    4 Weeks
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-outline" id="cancelLoanBtn">
+                                Cancel
+                            </button>
+                            <button type="button" class="btn" id="submitLoanBtn">
+                                <i class="fas fa-save"></i> Save Loan
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- All Borrowers Table -->
+                    <div class="table-container">
+                        <div class="section-header">
+                            <h2>All Borrowers</h2>
+                            <div>
+                                <button class="btn" id="newLoanBtn">
+                                    <i class="fas fa-plus"></i> New Loan
+                                </button>
+                            </div>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Phone</th>
+                                    <th>Loan Amount</th>
+                                    <th>Status</th>
+                                    <th>Due Date</th>
+                                    <th>Days Left</th>
+                                </tr>
+                            </thead>
+                            <tbody id="borrowersTable">
+                                <!-- Borrowers will be inserted here -->
+                            </tbody>
+                        </table>
+                        <div class="empty-state" id="noBorrowers">
+                            <i class="fas fa-user-friends"></i>
+                            <h3>No Borrowers Found</h3>
+                            <p>There are currently no borrowers in the system. Click "New Loan" to add one.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loan Calculator Tab -->
+                <div class="tab-content" id="calculator-tab">
+                    <div class="calculator-container active">
+                        <div class="calculator-header">
+                            <h2>Loan Calculator</h2>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="calcLoanAmount">Loan Amount (ZMW)</label>
+                            <input type="number" id="calcLoanAmount" min="100" value="1000" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Repayment Period</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="calcRepaymentPeriod" value="7" checked> 
+                                    1 Week (16%)
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="calcRepaymentPeriod" value="14"> 
+                                    2 Weeks (20%)
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="calcRepaymentPeriod" value="21"> 
+                                    3 Weeks (25%)
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="calcRepaymentPeriod" value="28"> 
+                                    4 Weeks (30%)
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn" id="calculateBtn" style="width: 100%;">
+                            <i class="fas fa-calculator"></i> Calculate
+                        </button>
+
+                        <div class="calculator-results" id="calculatorResults" style="display: none;">
+                            <h4>Loan Calculation Results</h4>
+                            <p>Principal Amount: <span class="result-value" id="calcPrincipal">ZMW 0</span></p>
+                            <p>Interest Amount: <span class="result-value" id="calcInterest">ZMW 0</span></p>
+                            <p>Total Repayment: <span class="result-value" id="calcTotal">ZMW 0</span></p>
+                            <p>Daily Repayment: <span class="result-value" id="calcDaily">ZMW 0</span></p>
+                            <p>Weekly Repayment: <span class="result-value" id="calcWeekly">ZMW 0</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification -->
+        <div class="notification" id="notification">
+            <div class="notification-icon">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div class="notification-content">
+                <h4 id="notificationTitle">Loan Due Soon</h4>
+                <p id="notificationMessage">A loan is due in 3 days</p>
+            </div>
+            <button class="close-notification" id="closeNotification">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJjOGei5nqV5rY47P48_lPmHggPo2yaBs",
+            authDomain: "damar-loan-enterprise.firebaseapp.com",
+            databaseURL: "https://damar-loan-enterprise-default-rtdb.firebaseio.com",
+            projectId: "damar-loan-enterprise",
+            storageBucket: "damar-loan-enterprise.appspot.com",
+            messagingSenderId: "994778708379",
+            appId: "1:994778708379:web:7ca6f6a282b782fe52493e",
+            measurementId: "G-6DKWS0TS7C"
+        };
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const database = firebase.database();
+
+        // Global variables
+        let isDarkMode = false;
+        let borrowersData = [];
+        let notificationTimeout;
+
+        // Dark mode toggle
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            localStorage.setItem('darkMode', isDarkMode);
+            updateDarkModeButton();
+        }
+
+        function updateDarkModeButton() {
+            const icon = document.getElementById('darkModeToggle').querySelector('i');
+            if (isDarkMode) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+
+        // Check for saved dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            isDarkMode = true;
+            document.body.classList.add('dark-mode');
+        }
+        updateDarkModeButton();
+
+        // Format currency
+        function formatCurrency(amount) {
+            return `ZMW ${parseFloat(amount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+        }
+
+        // Get days until due
+        function getDaysUntilDue(dueDateStr) {
+            if (!dueDateStr) return null;
+            
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const dueDate = new Date(dueDateStr.split('/').reverse().join('-'));
+            dueDate.setHours(0, 0, 0, 0);
+            const diffTime = dueDate - today;
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        // Get status badge
+        function getStatusBadge(status, daysUntilDue, repaid) {
+            if (repaid) {
+                return '<span class="status-badge status-repaid">Repaid</span>';
+            }
+            
+            if (status === 'Pending') {
+                return '<span class="status-badge status-pending">Pending</span>';
+            }
+            
+            if (status === 'Rejected') {
+                return '<span class="status-badge status-rejected">Rejected</span>';
+            }
+            
+            if (daysUntilDue === null) {
+                return '<span class="status-badge status-active">Active</span>';
+            }
+            
+            if (daysUntilDue < 0) {
+                return '<span class="status-badge status-overdue">Overdue</span>';
+            }
+            
+            if (daysUntilDue === 0) {
+                return '<span class="status-badge status-overdue">Due Today</span>';
+            }
+            
+            if (daysUntilDue <= 3) {
+                return '<span class="status-badge status-overdue">Due Soon</span>';
+            }
+            
+            return '<span class="status-badge status-active">Active</span>';
+        }
+
+        // Format days left
+        function formatDaysLeft(days) {
+            if (days === null) return '-';
+            if (days < 0) return `${Math.abs(days)} days ago`;
+            if (days === 0) return 'Today';
+            return `${days} days`;
+        }
+
+        // Calculate due date
+        function calculateDueDate(daysToAdd) {
+            const today = new Date();
+            const dueDate = new Date(today);
+            dueDate.setDate(today.getDate() + parseInt(daysToAdd));
+            return dueDate.toLocaleDateString('en-GB');
+        }
+
+        // Show notification
+        function showNotification(title, message, type = 'due-soon') {
+            const notification = document.getElementById('notification');
+            notification.className = `notification ${type} show`;
+            document.getElementById('notificationTitle').textContent = title;
+            document.getElementById('notificationMessage').textContent = message;
+            
+            // Hide after 5 seconds
+            clearTimeout(notificationTimeout);
+            notificationTimeout = setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+
+        // Close notification
+        function closeNotification() {
+            document.getElementById('notification').classList.remove('show');
+        }
+
+        // Add loan to database
+        function addLoan(loanData) {
+            const loansRef = database.ref('applications');
+            const newLoanRef = loansRef.push();
+            
+            // Show loading state
+            const submitBtn = document.getElementById('submitLoanBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="spinner"></span> Processing...';
+            submitBtn.disabled = true;
+            
+            return newLoanRef.set(loanData)
+                .then(() => {
+                    showNotification('Loan Added', 'New loan has been added successfully', 'paid');
+                    toggleForm();
+                    resetForm();
+                })
+                .catch(error => {
+                    console.error("Error adding loan:", error);
+                    showNotification('Error', 'Failed to add loan. Please try again.', 'due-today');
+                })
+                .finally(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                });
+        }
+
+        // Reset form
+        function resetForm() {
+            document.getElementById('firstName').value = '';
+            document.getElementById('lastName').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('loanAmount').value = '100';
+            document.querySelector('input[name="repaymentPeriod"]:checked').checked = true;
+        }
+
+        // Fetch all borrowers from database
+        function fetchBorrowers() {
+            const loansRef = database.ref('applications');
+            loansRef.on('value', (snapshot) => {
+                const borrowers = [];
+                let totalBorrowers = 0;
+                let activeLoans = 0;
+                let overdueLoans = 0;
+                let totalLoanAmount = 0;
+                
+                if (snapshot.exists()) {
+                    snapshot.forEach(childSnapshot => {
+                        const borrower = {
+                            id: childSnapshot.key,
+                            ...childSnapshot.val()
+                        };
+                        
+                        // Calculate days until due
+                        borrower.daysUntilDue = getDaysUntilDue(borrower.dueDate);
+                        
+                        // Count stats
+                        totalBorrowers++;
+                        totalLoanAmount += parseFloat(borrower.loanAmount) || 0;
+                        
+                        if (borrower.status === 'Active' && !borrower.repaid) {
+                            activeLoans++;
+                            
+                            if (borrower.daysUntilDue !== null && borrower.daysUntilDue < 0) {
+                                overdueLoans++;
+                            }
+                        }
+                        
+                        borrowers.push(borrower);
+                    });
+                }
+                
+                borrowersData = borrowers;
+                renderBorrowers(borrowers);
+                
+                // Update stats
+                document.getElementById('totalBorrowers').textContent = totalBorrowers;
+                document.getElementById('activeLoans').textContent = activeLoans;
+                document.getElementById('overdueLoans').textContent = overdueLoans;
+                document.getElementById('totalLoanAmount').textContent = formatCurrency(totalLoanAmount);
+                
+                // Check for due dates and show notifications
+                checkDueDates(borrowers);
+            });
+        }
+
+        // Check for loans due soon and show notifications
+        function checkDueDates(borrowers) {
+            const today = new Date();
+            
+            borrowers.forEach(borrower => {
+                if (borrower.daysUntilDue === 3) {
+                    showNotification(
+                        'Loan Due Soon', 
+                        `${borrower.firstName}'s loan is due in 3 days (${borrower.dueDate})`, 
+                        'due-soon'
+                    );
+                } else if (borrower.daysUntilDue === 1) {
+                    showNotification(
+                        'Loan Due Tomorrow', 
+                        `${borrower.firstName}'s loan is due tomorrow`, 
+                        'due-soon'
+                    );
+                } else if (borrower.daysUntilDue === 0) {
+                    showNotification(
+                        'Loan Due Today', 
+                        `${borrower.firstName}'s loan is due today`, 
+                        'due-today'
+                    );
+                } else if (borrower.daysUntilDue < 0) {
+                    showNotification(
+                        'Loan Overdue', 
+                        `${borrower.firstName}'s loan is ${Math.abs(borrower.daysUntilDue)} days overdue`, 
+                        'due-today'
+                    );
+                }
+            });
+        }
+
+        // Render borrowers to the table
+        function renderBorrowers(borrowers) {
+            const borrowersTable = document.getElementById('borrowersTable');
+            borrowersTable.innerHTML = '';
+            
+            if (borrowers.length === 0) {
+                document.getElementById('noBorrowers').style.display = 'block';
+                return;
+            }
+            
+            document.getElementById('noBorrowers').style.display = 'none';
+            
+            // Sort borrowers by due date (soonest first)
+            borrowers.sort((a, b) => {
+                if (a.daysUntilDue === null && b.daysUntilDue === null) return 0;
+                if (a.daysUntilDue === null) return 1;
+                if (b.daysUntilDue === null) return -1;
+                return a.daysUntilDue - b.daysUntilDue;
+            });
+            
+            borrowers.forEach(borrower => {
+                const row = document.createElement('tr');
+                
+                // Name
+                const nameCell = document.createElement('td');
+                nameCell.textContent = `${borrower.firstName} ${borrower.lastName}`;
+                row.appendChild(nameCell);
+                
+                // Phone
+                const phoneCell = document.createElement('td');
+                phoneCell.textContent = borrower.phone || '-';
+                row.appendChild(phoneCell);
+                
+                // Loan Amount
+                const amountCell = document.createElement('td');
+                amountCell.textContent = formatCurrency(borrower.loanAmount || 0);
+                row.appendChild(amountCell);
+                
+                // Status
+                const statusCell = document.createElement('td');
+                statusCell.innerHTML = getStatusBadge(
+                    borrower.status, 
+                    borrower.daysUntilDue, 
+                    borrower.repaid
+                );
+                row.appendChild(statusCell);
+                
+                // Due Date
+                const dueDateCell = document.createElement('td');
+                dueDateCell.textContent = borrower.dueDate || '-';
+                row.appendChild(dueDateCell);
+                
+                // Days Left
+                const daysLeftCell = document.createElement('td');
+                daysLeftCell.textContent = formatDaysLeft(borrower.daysUntilDue);
+                row.appendChild(daysLeftCell);
+                
+                borrowersTable.appendChild(row);
+            });
+        }
+
+        // Toggle form visibility
+        function toggleForm() {
+            document.getElementById('loanForm').classList.toggle('active');
+            if (document.getElementById('loanForm').classList.contains('active')) {
+                document.getElementById('firstName').focus();
+            }
+        }
+
+        // Submit new loan
+        function submitLoan() {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+            const repaymentPeriod = document.querySelector('input[name="repaymentPeriod"]:checked').value;
+            
+            if (!firstName || !lastName || !phone || !loanAmount || !repaymentPeriod) {
+                showNotification('Validation Error', 'Please fill in all required fields', 'due-today');
+                return;
+            }
+            
+            if (phone.length < 9 || phone.length > 12) {
+                showNotification('Validation Error', 'Please enter a valid phone number (9-12 digits)', 'due-today');
+                return;
+            }
+            
+            const loanData = {
+                firstName,
+                lastName,
+                phone,
+                loanAmount,
+                repaymentPeriod,
+                dueDate: calculateDueDate(repaymentPeriod),
+                applicationDate: new Date().toISOString(),
+                status: 'Active',
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            };
+            
+            addLoan(loanData);
+        }
+
+        // Calculate loan details
+        function calculateLoan() {
+            const amount = parseFloat(document.getElementById('calcLoanAmount').value) || 0;
+            const period = parseInt(document.querySelector('input[name="calcRepaymentPeriod"]:checked').value);
+            
+            // Determine interest rate based on period
+            let interestRate;
+            switch(period) {
+                case 7:
+                    interestRate = 16; // 1 week = 16%
+                    break;
+                case 14:
+                    interestRate = 20; // 2 weeks = 20%
+                    break;
+                case 21:
+                    interestRate = 25; // 3 weeks = 25%
+                    break;
+                case 28:
+                    interestRate = 30; // 4 weeks = 30%
+                    break;
+                default:
+                    interestRate = 10; // Default fallback
+            }
+            
+            if (amount <= 0 || period <= 0) {
+                showNotification('Calculation Error', 'Please enter valid values for all fields', 'due-today');
+                return;
+            }
+            
+            const interestAmount = (amount * interestRate / 100);
+            const totalRepayment = amount + interestAmount;
+            const dailyRepayment = totalRepayment / period;
+            const weeklyRepayment = dailyRepayment * 7;
+            
+            // Display results
+            document.getElementById('calcPrincipal').textContent = formatCurrency(amount);
+            document.getElementById('calcInterest').textContent = formatCurrency(interestAmount);
+            document.getElementById('calcTotal').textContent = formatCurrency(totalRepayment);
+            document.getElementById('calcDaily').textContent = formatCurrency(dailyRepayment);
+            document.getElementById('calcWeekly').textContent = formatCurrency(weeklyRepayment);
+            
+            // Show results
+            document.getElementById('calculatorResults').style.display = 'block';
+        }
+
+        // Handle login
+        function handleLogin(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorElement = document.getElementById('loginError');
+            
+            // Correct credentials
+            const correctUsername = 'admin';
+            const correctPassword = 'Damar12345';
+            
+            if (username === correctUsername && password === correctPassword) {
+                // Hide login screen and show app
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('appContainer').style.display = 'block';
+                
+                // Initialize the app
+                fetchBorrowers();
+            } else {
+                // Show error
+                errorElement.style.display = 'block';
+                document.getElementById('password').value = '';
+                document.getElementById('password').focus();
+            }
+        }
+
+        // Switch tabs
+        function switchTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(`${tabId}-tab`).classList.add('active');
+            
+            // Update active tab
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up login form
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            
+            // Dark mode toggle event
+            document.getElementById('darkModeToggle').addEventListener('click', toggleDarkMode);
+            
+            // Form buttons
+            document.getElementById('newLoanBtn').addEventListener('click', toggleForm);
+            document.getElementById('cancelLoanBtn').addEventListener('click', toggleForm);
+            document.getElementById('submitLoanBtn').addEventListener('click', submitLoan);
+            
+            // Notification close button
+            document.getElementById('closeNotification').addEventListener('click', closeNotification);
+            
+            // Phone number validation
+            document.getElementById('phone').addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+            
+            // Submit form on Enter key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && document.getElementById('loanForm').classList.contains('active')) {
+                    submitLoan();
+                }
+            });
+            
+            // Calculator button
+            document.getElementById('calculateBtn').addEventListener('click', calculateLoan);
+            
+            // Tab switching
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    switchTab(this.getAttribute('data-tab'));
+                });
+            });
+            
+            // Make calculator inputs numeric only
+            document.getElementById('calcLoanAmount').addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^0-9.]/g, '');
+            });
+            
+            // Auto-calculate when repayment period changes
+            document.querySelectorAll('input[name="calcRepaymentPeriod"]').forEach(radio => {
+                radio.addEventListener('change', calculateLoan);
+            });
+        });
+    </script>
+</body>
+</html>
